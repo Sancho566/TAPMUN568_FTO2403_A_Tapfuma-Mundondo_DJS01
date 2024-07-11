@@ -13,22 +13,30 @@ const d = 0; // distance (km)
 const fuel = 5000; // remaining fuel (kg)
 const fbr = 0.5; // fuel burn rate (kg/s)
 
+// Function to calculate new velocity based on acceleration
+const calcNewVel = (vel, acc, time) => {
+  // Check if the inputs are of the correct type
+  if (typeof vel !== 'number' || typeof acc !== 'number' || typeof time !== 'number') {
+    throw new Error('Invalid input: vel, acc, and time should be numbers.');
+  }
 
-const d2 = d + (vel*time) //calcultes new distance
-const rf = fbr*time //calculates remaining fuel
-const vel2 = calcNewVel(acc, vel, time) //calculates new velocity based on acceleration
+  // Convert acceleration from m/s^2 to km/h^2
+  const acc_kmh2 = acc * 12960; // 1 m/s^2 = 12960 km/h^2
 
-// Pick up an error with how the function below is called and make it robust to such errors
-calcNewVel = (vel, acc, time) => { 
-  return vel + (acc*time)
-}
+  // Calculate new velocity
+  return vel + (acc_kmh2 * time / 3600); // Convert time from seconds to hours
+};
 
-console.log(`Corrected New Velocity: ${vel2} km/h`);
-console.log(`Corrected New Distance: ${d2} km`);
-console.log(`Corrected Remaining Fuel: ${rf} kg`);
+// Calculate new distance
+const d2 = d + (vel * time / 3600); // Convert time from seconds to hours
 
+// Calculate remaining fuel
+const rf = fuel - (fbr * time); // Ensure fuel is reduced by the burn rate over the given time
 
+// Calculate new velocity based on acceleration
+const vel2 = calcNewVel(vel, acc, time);
 
-
-
-
+// Output the corrected values
+console.log(`Corrected New Velocity: ${vel2.toFixed(2)} km/h`);
+console.log(`Corrected New Distance: ${d2.toFixed(2)} km`);
+console.log(`Corrected Remaining Fuel: ${rf.toFixed(2)} kg`);
